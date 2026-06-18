@@ -4,3 +4,4 @@ Production-grade concurrency patterns in Go.
 
 ## Planned Modules
 - Worker Pool
+- Rate Limiter
