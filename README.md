@@ -7,3 +7,4 @@ Production-grade concurrency patterns in Go.
 - Rate Limiter
 - Concurrent Cache
 - Event Pipeline
+- Distributed Scheduler
