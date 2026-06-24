@@ -8,3 +8,4 @@ Production-grade concurrency patterns in Go.
 - Concurrent Cache
 - Event Pipeline
 - Distributed Scheduler
+- Goroutine Leak Detector
