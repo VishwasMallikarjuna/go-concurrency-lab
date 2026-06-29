@@ -9,3 +9,5 @@ Production-grade concurrency patterns in Go.
 - Event Pipeline
 - Distributed Scheduler
 - Goroutine Leak Detector
+
+## Goals
