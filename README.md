@@ -11,3 +11,5 @@ Production-grade concurrency patterns in Go.
 - Goroutine Leak Detector
 
 ## Goals
+
+- Benchmark implementations
