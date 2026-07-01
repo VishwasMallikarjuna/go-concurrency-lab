@@ -12,4 +12,5 @@ Production-grade concurrency patterns in Go.
 
 ## Goals
 
+- Advanced concurrency
 - Benchmark implementations
