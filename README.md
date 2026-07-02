@@ -14,3 +14,4 @@ Production-grade concurrency patterns in Go.
 
 - Advanced concurrency
 - Benchmark implementations
+- Analyze race conditions
