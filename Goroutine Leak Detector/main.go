@@ -1,5 +1,5 @@
 package main
 
-funac main(){
+func main(){
   
 }
