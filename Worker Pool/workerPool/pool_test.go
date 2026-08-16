@@ -61,3 +61,29 @@ func TestPool_ExecutesConcurrently(t *testing.T) {
 
 	close(release)
 }
+
+func TestPool_QueueFull(t *testing.T) {
+	pool := New(context.Background(), 1, 2)
+	defer pool.Shutdown()
+
+	block := make(chan struct{})
+
+	job := func(ctx context.Context) error {
+		<-block
+		return nil
+	}
+
+	if err := pool.Submit(job); err != nil {
+		t.Fatalf("first Submit() = %v", err)
+	}
+
+	if err := pool.Submit(job); err != nil {
+		t.Fatalf("second Submit() = %v", err)
+	}
+
+	if err := pool.Submit(job); err != ErrFull {
+		t.Fatalf("third Submit() = %v, want %v", err, ErrFull)
+	}
+
+	close(block)
+}
