@@ -87,3 +87,32 @@ func TestPool_QueueFull(t *testing.T) {
 
 	close(block)
 }
+
+func TestPool_Shutdown(t *testing.T) {
+	pool := New(context.Background(), 3, 10)
+
+	var executed atomic.Int32
+
+	for i := 0; i < 10; i++ {
+		err := pool.Submit(func(ctx context.Context) error {
+			executed.Add(1)
+			return nil
+		})
+
+		if err != nil {
+			t.Fatalf("Submit() error = %v", err)
+		}
+	}
+
+	pool.Shutdown()
+
+	if got := executed.Load(); got != 10 {
+		t.Fatalf("executed = %d, want 10", got)
+	}
+
+	if err := pool.Submit(func(ctx context.Context) error {
+		return nil
+	}); err != ErrClosed {
+		t.Fatalf("Submit() after shutdown = %v, want %v", err, ErrClosed)
+	}
+}
