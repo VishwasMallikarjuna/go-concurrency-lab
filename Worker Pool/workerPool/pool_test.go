@@ -116,3 +116,26 @@ func TestPool_Shutdown(t *testing.T) {
 		t.Fatalf("Submit() after shutdown = %v, want %v", err, ErrClosed)
 	}
 }
+
+func TestPool_RecoversFromJobPanic(t *testing.T) {
+	pool := New(context.Background(), 1, 10)
+	defer pool.Shutdown()
+
+	panicJob := func(ctx context.Context) error {
+		panic("boom")
+	}
+
+	normalJob := func(ctx context.Context) error {
+		return nil
+	}
+
+	if err := pool.Submit(panicJob); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := pool.Submit(normalJob); err != nil {
+		t.Fatal(err)
+	}
+
+	pool.Shutdown()
+}
