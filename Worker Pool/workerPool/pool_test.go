@@ -139,3 +139,32 @@ func TestPool_RecoversFromJobPanic(t *testing.T) {
 
 	pool.Shutdown()
 }
+
+func TestPool_ContextCancellation(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	pool := New(ctx, 1, 10)
+
+	cancel()
+
+	done := make(chan struct{})
+
+	err := pool.Submit(func(ctx context.Context) error {
+		close(done)
+		return nil
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	select {
+	case <-done:
+		t.Fatal("job executed after cancellation")
+
+	case <-time.After(100 * time.Millisecond):
+		// expected
+	}
+
+	pool.Shutdown()
+}
