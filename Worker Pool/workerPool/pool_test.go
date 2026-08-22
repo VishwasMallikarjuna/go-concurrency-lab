@@ -168,3 +168,27 @@ func TestPool_ContextCancellation(t *testing.T) {
 
 	pool.Shutdown()
 }
+
+func TestPool_ConcurrentSubmitAndShutdown(t *testing.T) {
+	pool := New(context.Background(), 4, 100)
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < 20; i++ {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+
+			for j := 0; j < 100; j++ {
+				_ = pool.Submit(func(ctx context.Context) error {
+					return nil
+				})
+			}
+		}()
+	}
+
+	go pool.Shutdown()
+
+	wg.Wait()
+}
