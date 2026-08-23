@@ -192,3 +192,18 @@ func TestPool_ConcurrentSubmitAndShutdown(t *testing.T) {
 
 	wg.Wait()
 }
+
+func BenchmarkPool_Submit(b *testing.B) {
+	pool := New(context.Background(), 10, b.N)
+	defer pool.Shutdown()
+
+	job := func(ctx context.Context) error {
+		return nil
+	}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = pool.Submit(job)
+	}
+}
